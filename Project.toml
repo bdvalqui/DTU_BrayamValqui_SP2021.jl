@@ -1,0 +1,13 @@
+name = "DTU_BrayamValqui_SP2021"
+uuid = "8e5b8e93-ea81-470b-9e6b-ce8f3ae004cd"
+authors = ["Brayam Valqui"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
