@@ -1,108 +1,50 @@
 #Sets
-set_tech = 1:6
-set_opt = 1:4
-set_exist = 5:6
-#set_periods = 1:24
-set_periods = 1:672
-#set_scenarios = 1:20
-set_scenarios = 1:200
+set_generators = 1:2
+set_nodes = 1:3
+set_demands = 1:2
 
-#Progressive Hedging Parameter
-γ=100
+#Parameters
+generators=[100      12;
+            80       20]
 
-tech=[300       2       1200         1               1             0             0          0.0531      9.87;
-      300       3       800          1               1             0             0          0.0531      9.00;
-      300       2       1000        1              2            0              0            0.0531      9.87;
-      300       3        900         1              2            0              0            0.0531      9.00;
-       0        0         0           0               1             0             0          0.0531      9.87;
-       0        0         0           0               2             0             0          0.0531      9.87]
+demands=[100  40;
+         50   35]
 
-       #=
- load_st2=[300        300;
-           379        379;
-           420        420;
-          200        250;
-           470        425;
-          470        425;
-          220        280;
-           330        340;
-          330        340;
-          200        250;
-          470        425;
-           330        340;
-               200        250;
-               470        425;
-                379        379;
-               220        280;
-               330        340;
-               470        425;
-               330        340;
-               200        250;
-               470        425;
-               470        425;
-               379        379;
-               450        300]
-=#
-#Carbprice=[20;135]
+capacity=1
+varcost=2
+load_node=1
+utility_node=2
 
+network=[ 1  2  100 500;
+          1  3  100 500;
+          2  3  100 500;
+          2  1  100 500;
+          3  1  100 500;
+          3  2  100 500]
 
-               #Indices for set_tech
-               capacity=1
-               varcost=2
-               invcost=3
-               maxBuilds=4
-               ownership=5
-               existingunits=6
-               fixedcost=7
-               EmissionsRate=8
-               HeatRate=9
+start_node=network[:,1]
+end_node=network[:,2]
+F_max=network[:,3]
+B=network[:,4]
 
-               prob=zeros(length(set_scenarios))
-               for s in set_scenarios
-               prob[s]=1/length(set_scenarios)
-               end
+n_node=3
+n_link=6
 
-               #Parameters
-               voll=100000
-               Rm=0.1
+set_links=1:n_link
+#create a n*m Tuple Array with ‘undefined’ contents
+links = Array{Tuple{Int64, Int64},2}(undef, n_link, 1)
 
-α_down=-10000
-
-#D=[470;425]
-#=
-D=zeros(length(set_scenarios))
-for i in set_scenarios
-D[i]=maximum(load_st2[:,i])
+for i=1:n_link
+  links[i] = (start_node[i], end_node[i])
 end
-=#
 
-#Define number of iterations
-K=1:4
-iteration_ben=0
-#These variables are determined in the ierations, so can not be in data.jl
-#SetDual_constraint1_st2=zeros(length(set_opt),length(set_periods),length(set_scenarios),length(K))
-#SetDual_constraint2_st2=zeros(length(set_tech),length(set_periods),length(set_scenarios),length(K))
-#SetDual_constraint3_st2=zeros(length(set_periods),length(set_scenarios),length(K))
-Set_α=zeros(length(K))
-Set_master_obj=zeros(length(K))
-Set_stage1_cost=zeros(length(K))
-#subproblem_obj_sce=zeros(length(set_scenarios),length(K))
-Set_stage2_cost=zeros(length(K))
-Set_upperbound=zeros(length(K))
-Set_invements=zeros(length(set_opt),length(K))
-D=zeros(length(set_scenarios))
+F_max_dict=Dict()
+B_dict=Dict()
 
+for i=1:n_link
+  F_max_dict[(start_node[i], end_node[i])] = F_max[i]
+  B_dict[(start_node[i], end_node[i])] = B[i]
+end
 
-SetDual_constraint1_st2=SharedArray(zeros(length(set_opt),length(set_periods),length(set_scenarios),length(K)))
-SetDual_constraint2_st2=SharedArray(zeros(length(set_tech),length(set_periods),length(set_scenarios),length(K)))
-SetDual_constraint3_st2=SharedArray(zeros(length(set_periods),length(set_scenarios),length(K)))
-subproblem_obj_sce=SharedArray(zeros(length(set_scenarios),length(K)))
-invesments_sce=SharedArray(zeros(length(set_opt),length(set_scenarios),length(K)))
-average_invesments=SharedArray(ones(length(set_opt),length(K)))
-x_bar=SharedArray(ones(length(set_opt)))
-λ_iter=SharedArray(ones(length(set_opt),length(set_scenarios),length(K)+1))
-λ=SharedArray(ones(length(set_opt)))
-#λ_iter_bar=SharedArray(ones(length(set_opt),length(K)))
-obj_sce=SharedArray(zeros(length(K)))
-#obj_sce=1
-prob_scenario=0
+MapG=[(1,1), (2,2), (0,0)]
+MapD=[(1,2),(2,3),(0,0)]
