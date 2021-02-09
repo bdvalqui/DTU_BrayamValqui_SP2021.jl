@@ -1,6 +1,10 @@
 #Sets
 set_generators = 1:2
 set_nodes = 1:3
+set_nodes_ref=3
+set_nodes_noref=1:2
+set_nodes_g= 1:2
+set_nodes_d= 2:3
 set_demands = 1:2
 
 #Parameters
@@ -16,7 +20,7 @@ load_node=1
 utility_node=2
 
 network=[ 1  2  100 500;
-          1  3  100 500;
+          1  3   40 500;
           2  3  100 500;
           2  1  100 500;
           3  1  100 500;
@@ -36,6 +40,12 @@ links = Array{Tuple{Int64, Int64},2}(undef, n_link, 1)
 
 for i=1:n_link
   links[i] = (start_node[i], end_node[i])
+end
+
+links_rev = Array{Tuple{Int64, Int64},2}(undef, n_link, 1)
+
+for i=1:n_link
+  links_rev[i] = (end_node[i], start_node[i])
 end
 
 F_max_dict=Dict()

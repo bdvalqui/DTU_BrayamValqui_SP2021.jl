@@ -27,7 +27,7 @@ resultfile != "" && open(resultfile, truncate = true) do f
     println(f,"")
     println(f,"Production level of generator g:",p_G_value)
     println(f,"")
-    println(f,"Comsuption level of demand d:",p_D_value)
+    println(f,"Consumption level of demand d:",p_D_value)
     println(f,"")
     println(f,"Electricity Price:",Dual_constraint6)
     println(f,"")

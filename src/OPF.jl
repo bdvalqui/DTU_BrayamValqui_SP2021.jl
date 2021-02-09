@@ -19,7 +19,7 @@ m=Model(optimizer)
 
 @constraint(m, constraint4[j in links], f[j] <= F_max_dict[j])
 
-@constraint(m, constraint5, θ[1] == 0 )
+@constraint(m, constraint5, θ[3] == 0 )
 
 #Analyze shadow prices in Jump/ it is different if supply is on the right hand-side
 @constraint(m, constraint6[n in set_nodes], +sum(p_G[g] for g in set_generators if n == MapG[g][2])
@@ -45,7 +45,7 @@ p_D_value=zeros(length(set_demands))
 for d in set_demands
   p_D_value[d]=JuMP.value.(p_D[d])
 end
-println("Comsuption level of demand d:",p_D_value)
+println("Consumption level of demand d:",p_D_value)
 
 Dual_constraint6=zeros(length(set_nodes))
 
